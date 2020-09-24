@@ -1,6 +1,6 @@
 package me.h21.jointitle.Config;
 
-import me.h21.jointitle.JTMain;
+import me.h21.jointitle.JoinTitle;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
 
@@ -85,7 +85,7 @@ public class Config {
     public static void reloadConfig() {
 
         try {
-            config = JTMain.getInstance().getLoader().load();
+            config = JoinTitle.getInstance().getLoader().load();
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -1,7 +1,7 @@
 package me.h21.jointitle.Commands;
 
 import me.h21.jointitle.Config.Config;
-import me.h21.jointitle.JTMain;
+import me.h21.jointitle.JoinTitle;
 import me.rojo8399.placeholderapi.PlaceholderService;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import org.apache.commons.lang3.StringUtils;
@@ -9,7 +9,6 @@ import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
-import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.command.source.ConsoleSource;
 import org.spongepowered.api.command.spec.CommandExecutor;
 import org.spongepowered.api.entity.living.player.Player;
@@ -17,8 +16,6 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.serializer.TextSerializers;
 import org.spongepowered.api.text.title.Title;
 
-import java.util.HashMap;
-import java.util.Map;
 
 public class ExecutorSend implements CommandExecutor {
 
@@ -26,20 +23,20 @@ public class ExecutorSend implements CommandExecutor {
     public CommandResult execute(CommandSource src, CommandContext args) throws CommandException {
 
         CommentedConfigurationNode config = Config.getConfig();
-        PlaceholderService phservice = JTMain.getInstance().getPlaceHolder();
+        PlaceholderService phservice = JoinTitle.getInstance().getPlaceHolder();
 
         String title = args.<String>getOne("title").get();
 
-        if(src instanceof ConsoleSource){
+        if (src instanceof ConsoleSource) {
 
             throw new CommandException(Text.of("This command can only be run by player!"));
         }
 
-        if(src instanceof Player) {
+        if (src instanceof Player) {
 
             Player player = (Player) src;
 
-            if(title.toLowerCase() == "admin"){
+            if (title.toLowerCase() == "admin") {
 
                 player.sendTitle(Title.builder()
                         .title(phservice.replacePlaceholders(TextSerializers.FORMATTING_CODE.deserialize(StringUtils.substringBetween(Config.getAdminSampel(), "#title:", "#")), player, null))
@@ -50,7 +47,7 @@ public class ExecutorSend implements CommandExecutor {
                         .fadeOut(config.getNode("Admin").getNode("FadeOut").getInt())
                         .build());
 
-            }else if(title.toLowerCase() == "vip"){
+            } else if (title.toLowerCase() == "vip") {
 
                 player.sendTitle(Title.builder()
                         .title(phservice.replacePlaceholders(TextSerializers.FORMATTING_CODE.deserialize(StringUtils.substringBetween(Config.getVipSampel(), "#title:", "#")), player, null))
@@ -61,7 +58,7 @@ public class ExecutorSend implements CommandExecutor {
                         .fadeOut(config.getNode("Vip").getNode("FadeOut").getInt())
                         .build());
 
-            }else if(title.toLowerCase() == "default"){
+            } else if (title.toLowerCase() == "default") {
 
                 player.sendTitle(Title.builder()
                         .title(phservice.replacePlaceholders(TextSerializers.FORMATTING_CODE.deserialize(StringUtils.substringBetween(Config.getDefaultSampel(), "#title:", "#")), player, null))

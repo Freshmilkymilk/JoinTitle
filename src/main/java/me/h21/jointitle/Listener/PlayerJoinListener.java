@@ -1,12 +1,16 @@
 package me.h21.jointitle.Listener;
 
 import me.h21.jointitle.Config.Config;
-import me.h21.jointitle.JTMain;
-import me.lucko.luckperms.LuckPerms;
-import me.lucko.luckperms.api.Contexts;
-import me.lucko.luckperms.api.LuckPermsApi;
-import me.lucko.luckperms.api.Node;
+import me.h21.jointitle.JoinTitle;
 import me.rojo8399.placeholderapi.PlaceholderService;
+import net.luckperms.api.LuckPerms;
+import net.luckperms.api.LuckPermsProvider;
+import net.luckperms.api.cacheddata.CachedPermissionData;
+import net.luckperms.api.context.ContextManager;
+import net.luckperms.api.context.ImmutableContextSet;
+import net.luckperms.api.model.user.User;
+import net.luckperms.api.node.Node;
+import net.luckperms.api.query.QueryOptions;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import org.apache.commons.lang3.StringUtils;
 import org.spongepowered.api.entity.living.player.Player;
@@ -19,17 +23,26 @@ import java.util.UUID;
 
 public class PlayerJoinListener {
 
+    LuckPerms api = LuckPermsProvider.get();
+
+    public boolean hasPermission(User user, String permission) {
+        ContextManager contextManager = api.getContextManager();
+        ImmutableContextSet contextSet = contextManager.getContext(user).orElseGet(contextManager::getStaticContext);
+
+        CachedPermissionData permissionData = user.getCachedData().getPermissionData(QueryOptions.contextual(contextSet));
+        return permissionData.checkPermission(permission).asBoolean();
+    }
+
     @Listener
     public void playerJoinEvent(ClientConnectionEvent.Join e) {
 
         /**LuckPerms Utils**/
 
-        LuckPermsApi api = LuckPerms.getApi();
-        Node node = api.getNodeFactory().newBuilder("*").build();
+        Node node = Node.builder("*").build();
 
         /**PlaceholderAPI Utils**/
 
-        PlaceholderService phservice = JTMain.getInstance().getPlaceHolder();
+        PlaceholderService phservice = JoinTitle.getInstance().getPlaceHolder();
 
         /**Misc Utils**/
 
@@ -38,13 +51,7 @@ public class PlayerJoinListener {
 
         CommentedConfigurationNode config = Config.getConfig();
 
-        /**Permissions booleans**/
-
-        boolean data = api.getUserManager().loadUser(id).join().getCachedData().getPermissionData(Contexts.global()).getPermissionValue("jointitle.title.default").asBoolean();
-        boolean data_vip = api.getUserManager().loadUser(id).join().getCachedData().getPermissionData(Contexts.global()).getPermissionValue("jointitle.title.vip").asBoolean();
-        boolean data_admin = api.getUserManager().loadUser(id).join().getCachedData().getPermissionData(Contexts.global()).getPermissionValue("jointitle.title.admin").asBoolean();
-
-        if (data == true) { //perm check
+        if (hasPermission(api.getUserManager().getUser(id), "jointitle.title.default")) { //perm check
 
             e.getTargetEntity().sendTitle(Title.builder()
                     .title(phservice.replacePlaceholders(TextSerializers.FORMATTING_CODE.deserialize(StringUtils.substringBetween(Config.getDefaultSampel(), "#title:", "#")), player, null))
@@ -57,7 +64,7 @@ public class PlayerJoinListener {
 
         }
 
-        if(data_vip == true){ //perm check
+        if (hasPermission(api.getUserManager().getUser(id), "jointitle.title.vip")) { //perm check
 
             e.getTargetEntity().sendTitle(Title.builder()
                     .title(phservice.replacePlaceholders(TextSerializers.FORMATTING_CODE.deserialize(StringUtils.substringBetween(Config.getVipSampel(), "#title:", "#")), player, null))
@@ -70,7 +77,7 @@ public class PlayerJoinListener {
 
         }
 
-        if(data_admin == true || api.getUserManager().loadUser(id).join().hasPermission(node).asBoolean() == true){ //perm and wildcard check
+        if (hasPermission(api.getUserManager().getUser(id), "jointitle.title.admin")) { //perm check
 
             e.getTargetEntity().sendTitle(Title.builder()
                     .title(phservice.replacePlaceholders(TextSerializers.FORMATTING_CODE.deserialize(StringUtils.substringBetween(Config.getAdminSampel(), "#title:", "#")), player, null))
