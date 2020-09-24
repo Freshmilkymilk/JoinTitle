@@ -1,4 +1,4 @@
-# JoinTitle
+# JoinTitle [![Build Status](https://travis-ci.com/Freshmilkymilk/JoinTitle.svg?branch=master)](https://travis-ci.com/Freshmilkymilk/JoinTitle)
 
 Simple plugin which send custom title on player loggin.
 
