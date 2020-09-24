@@ -10,11 +10,11 @@ Simple plugin which send custom title on player loggin.
 
 # Commands:
 
->"/jt" or "/jointitle"
+Alias for jointitle: "jt" or "jointitle".
 
-/jt reload - permission: jointitle.commands.admin, discription: Reloads plugin config.
+reload - permission: jointitle.commands.admin, discription: Reloads plugin config.
 
-/jt send <admin/vip/default> - permission: jointitle.commands.admin, discription: Send you specified title (Useful to check/edit text).
+send <admin/vip/default> - permission: jointitle.commands.admin, discription: Send you specified title (Useful to check/edit text).
 
 # Extra info
 
@@ -46,3 +46,8 @@ Your text need to be between #title:/#subtitle:/#actionbar: and # supports color
 # Showcase
 
 https://imgur.com/bKcMM6l
+
+# ChangeLog
+
+- 24.09.20 Updated to Sponge API 7.3.0 and LuckPerms API 5.1.
+- 16.07.19 Nothing special just coding things, instead of having 1 heavy main.class i split it into smaller classes.
